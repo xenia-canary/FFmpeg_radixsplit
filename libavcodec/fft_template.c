@@ -143,15 +143,33 @@ static void fft_calc_c(FFTContext *s, FFTComplex *z);
 
 static int split_radix_permutation(int i, int n, int inverse)
 {
-    int m;
-    if(n <= 2) return i&1;
-    m = n >> 1;
-    if(!(i&m))            return split_radix_permutation(i, m, inverse)*2;
-    m >>= 1;
-    if(inverse == !(i&m)) return split_radix_permutation(i, m, inverse)*4 + 1;
-    else                  return split_radix_permutation(i, m, inverse)*4 - 1;
-}
+  int multiplier; // eax
+  int v4; // er8
+  int m; // ecx
 
+  multiplier = 1;
+  v4 = 0;
+  while ( n > 2 )
+  {
+    while ( 1 )
+    {
+      m = n >> 1;
+      if ( ((n >> 1) & i) != 0 )
+        break;
+      n >>= 1;
+      multiplier *= 2;
+      if ( m <= 2 )
+        return v4 + (i & 1) * multiplier;
+    }
+    n >>= 2;
+    if ( inverse == ((n & i) == 0) )
+      v4 += multiplier;
+    else
+      v4 -= multiplier;
+    multiplier *= 4;
+  }
+  return v4 + (i & 1) * multiplier;
+}
 
 static const int avx_tab[] = {
     0, 4, 1, 5, 8, 12, 9, 13, 2, 6, 3, 7, 10, 14, 11, 15
