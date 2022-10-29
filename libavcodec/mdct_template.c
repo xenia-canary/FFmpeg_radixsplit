@@ -41,6 +41,17 @@
 #   define RSCALE(x, y) ((int)((x) + (unsigned)(y)) >> 1)
 #endif /* FFT_FIXED_32 */
 #endif
+static av_always_inline
+double cosfast(double x) 
+{
+	//todo:calc sin too
+    double inv2pi = 1.0 / (2.0 * M_PI);
+    x *= inv2pi;
+    x -= 0.25 + floor(x + 0.25);
+    x *= 16.0 * (fabs(x) - 0.5);
+    x += 0.225 * x * (fabs(x) - 1.0);
+    return x;
+}
 
 /**
  * init MDCT or IMDCT computation.
@@ -83,10 +94,10 @@ av_cold int ff_mdct_init(FFTContext *s, int nbits, int inverse, double scale)
     for(i=0;i<n4;i++) {
         alpha = 2 * M_PI * (i + theta) / n;
 #if FFT_FIXED_32
-        s->tcos[i*tstep] = lrint(-cos(alpha) * 2147483648.0);
+        s->tcos[i*tstep] = lrint(-cosfast(alpha) * 2147483648.0);
         s->tsin[i*tstep] = lrint(-sin(alpha) * 2147483648.0);
 #else
-        s->tcos[i*tstep] = FIX15(-cos(alpha) * scale);
+        s->tcos[i*tstep] = FIX15(-cosfast(alpha) * scale);
         s->tsin[i*tstep] = FIX15(-sin(alpha) * scale);
 #endif
     }
