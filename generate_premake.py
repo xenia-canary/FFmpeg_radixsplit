@@ -25,6 +25,12 @@ templates['libavcodec'] =  template_header.format('libavcodec', '9DB2830C-D326-4
     "libavutil",
   })
 """
+templates['libavformat'] =  template_header.format('libavformat', 'CEF2E128-AA08-4A36-8045-0AA68A556364') + """
+  links({
+    "libavutil",
+  })
+"""
+
 class Config():
     def __init__(self, os, arch, config_h, premake_filters):
         self.os = os
@@ -222,11 +228,15 @@ def generate_premake(configs, libname):
     M = 'Makefile'
 
     makefiles = [
-        (os.path.join(libname, M)           , configs),
-        # Original Makefiles are always included but since symbols are never used we can ignore them:
-        (os.path.join(libname, 'aarch64', M), list(filter(lambda config: config.arch == 'aarch64', configs))),
-        (os.path.join(libname, 'x86' , M)   , list(filter(lambda config: config.arch == 'x86_64', configs))),
+        (os.path.join(libname, M), configs),
     ]
+
+    if libname != 'libavformat':
+        makefiles += [
+            # Original Makefiles are always included but since symbols are never used we can ignore them:
+            (os.path.join(libname, 'aarch64', M), list(filter(lambda config: config.arch == 'aarch64', configs))),
+            (os.path.join(libname, 'x86' , M)   , list(filter(lambda config: config.arch == 'x86_64', configs)))
+        ]
 
     # Makefile variables that contain source files - conditionals from arch.mak
     file_blocks = [
