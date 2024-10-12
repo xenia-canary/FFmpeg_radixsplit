@@ -94,6 +94,8 @@ project("libavcodec")
     "wmaprodec.c",
     "wma.c",
     "wma_common.c",
+    "wmadec.c",
+    "aactab.c",
     "null_bsf.c",
     "pthread.c",
     "pthread_slice.c",
