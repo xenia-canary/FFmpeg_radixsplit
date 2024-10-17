@@ -47,6 +47,8 @@ project("libavformat")
     "asf.c",
     "asfcrypt.c",
     "avlanguage.c",
+    "mp3dec.c",
+    "replaygain.c",
     "file.c",
   })
   filter({"platforms:Windows"})

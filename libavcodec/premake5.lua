@@ -79,6 +79,9 @@ project("libavcodec")
     "utils.c",
     "vorbis_parser.c",
     "xiph.c",
+    "dct.c",
+    "dct32_fixed.c",
+    "dct32_float.c",
     "faandct.c",
     "faanidct.c",
     "fdctdsp.c",
@@ -89,13 +92,25 @@ project("libavcodec")
     "jrevdct.c",
     "mdct_float.c",
     "mdct_fixed_32.c",
+    "mpegaudio.c",
+    "mpegaudiodec_common.c",
+    "mpegaudiodsp.c",
+    "mpegaudiodsp_data.c",
+    "mpegaudiodsp_fixed.c",
+    "mpegaudiodsp_float.c",
+    "mpegaudiodecheader.c",
+    "mpegaudiodata.c",
+    "rdft.c",
     "sinewin.c",
     "wma_freqs.c",
+    "mpegaudiodec_fixed.c",
+    "mpegaudiodec_float.c",
     "wmaprodec.c",
     "wma.c",
     "wma_common.c",
     "wmadec.c",
     "aactab.c",
+    "mpegaudio_parser.c",
     "null_bsf.c",
     "pthread.c",
     "pthread_slice.c",
@@ -117,6 +132,7 @@ project("libavcodec")
   files({
     "aarch64/fft_init_aarch64.c",
     "aarch64/idctdsp_init_aarch64.c",
+    "aarch64/mpegaudiodsp_init.c",
   })
   filter({})
   --   NEON-OBJS:
@@ -125,6 +141,7 @@ project("libavcodec")
     "aarch64/fft_neon.S",
     "aarch64/simple_idct_neon.S",
     "aarch64/mdct_neon.S",
+    "aarch64/mpegaudiodsp_neon.S",
   })
   filter({})
 
@@ -133,9 +150,11 @@ project("libavcodec")
   filter({"platforms:Android-x86_64 or platforms:Linux or platforms:Windows"})
   files({
     "x86/constants.c",
+    "x86/dct_init.c",
     "x86/fdctdsp_init.c",
     "x86/fft_init.c",
     "x86/idctdsp_init.c",
+    "x86/mpegaudiodsp.c",
   })
   filter({})
   --   MMX-OBJS:
