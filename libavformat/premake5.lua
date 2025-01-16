@@ -15,6 +15,7 @@ project("libavformat")
 
   links({
     "libavutil",
+    "libavcodec",
   })
 
   -- libavformat/Makefile:
