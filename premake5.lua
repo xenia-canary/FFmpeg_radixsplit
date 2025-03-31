@@ -20,9 +20,7 @@ function ffmpeg_common()
       "/RTCsu",      -- '/O1' and '/RTCs' command-line options are incompatible
     })
   filter({"platforms:Windows", "configurations:Release"})
-    removeflags({
-      "LinkTimeOptimization", -- disable whole program optimization, breaks dead code elimination
-    })
+    linktimeoptimization("Off")
   filter("platforms:Windows")
     includedirs({
       ffmpeg_root .. "/compat/atomics/win32",
