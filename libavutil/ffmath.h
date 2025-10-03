@@ -28,6 +28,27 @@
 
 #include "attributes.h"
 #include "libm.h"
+static av_always_inline double fastexp2(double xmm0) {
+	//should upper bound be clamped too?
+	xmm0 = xmm0 > -1022 ? xmm0 : -1022;
+	
+	double xmm2 = 4.8425778448581696;
+	double xmm3 = 27.728333711624146;
+	
+	double xmm1 = floor(xmm0);
+	xmm0 = xmm0 - xmm1;
+	xmm1 = xmm1 + 1017.2740579843521;
+	xmm2 = xmm2 - xmm0;
+	
+	//fmadd would be nice here
+	xmm1 += (xmm0*-0.49013227410614491);
+	
+	xmm2 = xmm3 / xmm2;//this could be done via rcp_ss, the value will be within float32 range and we can refine
+	xmm0 = xmm1 + xmm2;
+	xmm0 = xmm0 * 4503599627370496.0;
+	signed long long r0 = (signed long long)(xmm0);
+	return *(double*)&r0;
+}
 
 /**
  * Compute 10^x for floating point values. Note: this function is by no means
@@ -41,7 +62,7 @@
  */
 static av_always_inline double ff_exp10(double x)
 {
-    return exp2(M_LOG2_10 * x);
+    return fastexp2(M_LOG2_10 * x);
 }
 
 static av_always_inline float ff_exp10f(float x)
